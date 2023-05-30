@@ -39,10 +39,10 @@ class User(Base):
     """User model"""
     username = Column(String(255), nullable=False, unique=True)
     token = Column(UUID(as_uuid=True), nullable=False, default=uuid.uuid4())
-    files = relationship("File", back_populates="owner")
+    files = relationship("File", back_populates="owner", cascade="all, delete")
 
 
 class File(Base):
     file_url = Column(String(255), nullable=False)
-    owner_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    owner_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"), nullable=False)
     owner = relationship("User", back_populates="files")
