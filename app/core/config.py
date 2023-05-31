@@ -24,7 +24,8 @@ class Settings(BaseSettings):
     # Application settings
     title: str = "Audio download project"
     debug: bool = False
-    root_path: str = ""
+    root_path: str = "/api"
+    media_dir: str = os.path.join(BASE_DIR, "media")
 
     @property
     def database_url(self) -> str:
