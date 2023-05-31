@@ -42,7 +42,8 @@ class User(Base):
     files = relationship("File", back_populates="owner", cascade="all, delete")
 
 
-class File(Base):
+class Media(Base):
+    title = Column(String(1024), nullable=False)
     file_url = Column(String(255), nullable=False)
     owner_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"), nullable=False)
     owner = relationship("User", back_populates="files")
