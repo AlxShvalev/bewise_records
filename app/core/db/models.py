@@ -39,7 +39,7 @@ class User(Base):
     """User model"""
     username = Column(String(255), nullable=False, unique=True)
     token = Column(UUID(as_uuid=True), nullable=False, default=uuid.uuid4())
-    files = relationship("Media", back_populates="owner", cascade="all, delete")
+    files = relationship("Record", back_populates="owner", cascade="all, delete")
 
     def __repr__(self):
         return f"id: {self.id}, username: {self.username}"

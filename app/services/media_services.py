@@ -33,7 +33,7 @@ class MediaService:
         )
         media = await self._save_to_db(media, session)
         download_url = get_full_download_url(user_id, media.id)
-        return MediaResponse(download_url=download_url)
+        return RecordResponse(download_url=download_url)
 
     async def _save_file(self, file: UploadFile, user_id: int) -> str:
         db_path = os.path.join(settings.media_dir, str(user_id))
