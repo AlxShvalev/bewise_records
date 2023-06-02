@@ -7,7 +7,6 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.schemas import UserCreateRequest
-from app.api.routers import validate_token
 from app.core.db.models import User
 
 
@@ -18,7 +17,7 @@ class UserService:
             token: UUID,
             session: AsyncSession
     ) -> Optional[User]:
-        token = validate_token(token)
+        token = self._validate_token(token)
         statement = select(User).where(User.token == token)
         user = await session.execute(statement)
         return user.scalars().first()
@@ -32,6 +31,16 @@ class UserService:
         statement = select(User).where(User.username == username)
         user = await session.execute(statement)
         return user.first()
+
+    def _validate_token(self, token):
+        try:
+            UUID(token, version=4)
+            return token
+        except ValueError:
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail="User is not authorized or entered invalid token"
+            )
 
     async def create_user(
             self,
