@@ -11,7 +11,7 @@ ENV_FILE = os.path.join(BASE_DIR / ".env")
 class Settings(BaseSettings):
     """Application settings class."""
     # Hosting settings
-    ip_address: str
+    host: str
     ip_port: int
 
     # Database settings
@@ -24,8 +24,8 @@ class Settings(BaseSettings):
     # Application settings
     title: str = "Audio download project"
     debug: bool = False
-    root_path: str = "/api"
-    media_dir: str = os.path.join(BASE_DIR, "media")
+    root_path: str = ""
+    media_dir: str = "media"
 
     @property
     def database_url(self) -> str:
