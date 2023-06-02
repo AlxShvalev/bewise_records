@@ -35,8 +35,12 @@ async def upload_record(
     "/record",
     status_code=HTTPStatus.OK,
 )
-async def download_record(id: int, user: int):
-    file_path = await media_service.download_record(id, user)
+async def download_record(
+        id: int,
+        user: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    file_path = await media_service.download_record(id, user, session)
     return FileResponse(
         file_path,
         filename="Certificate.pdf",
