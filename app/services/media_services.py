@@ -16,7 +16,7 @@ def get_full_download_url(user_id: int, record_id: int):
 
 
 class MediaService:
-    async def upload_media(
+    async def upload_record(
             self,
             file: UploadFile,
             token: UUID,
@@ -34,6 +34,9 @@ class MediaService:
         media = await self._save_to_db(media, session)
         download_url = get_full_download_url(user_id, media.id)
         return RecordResponse(download_url=download_url)
+
+    async def download_record(self, record_id: int, user_id: int):
+        return os.path.join(BASE_DIR, "media/1/Certificate.pdf")
 
     async def _save_file(self, file: UploadFile, user_id: int) -> str:
         db_path = os.path.join(settings.media_dir, str(user_id))

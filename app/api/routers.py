@@ -2,6 +2,7 @@ from http import HTTPStatus
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, UploadFile
+from fastapi.responses import FileResponse
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,12 +23,25 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
     tags=["Upload"],
     summary="Upload wav file to server."
 )
-async def upload_media(
+async def upload_record(
         file: UploadFile,
         token: UUID = Depends(oauth2_scheme),
         session: AsyncSession = Depends(get_async_session)
 ) -> RecordResponse:
-    return await media_service.upload_media(file, token, session)
+    return await media_service.upload_record(file, token, session)
+
+
+@router.get(
+    "/record",
+    status_code=HTTPStatus.OK,
+)
+async def download_record(id: int, user: int):
+    file_path = await media_service.download_record(id, user)
+    return FileResponse(
+        file_path,
+        filename="Certificate.pdf",
+        media_type="multipart/form-data"
+    )
 
 
 @router.post(
