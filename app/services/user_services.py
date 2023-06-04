@@ -1,13 +1,12 @@
-from http import HTTPStatus
 from typing import Optional
 from uuid import UUID
 
-from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.schemas import UserCreateRequest
 from app.core.db.models import User
+from app.exceptions import AlreadyExistsException, NotFoundException, UnauthorizedException
 
 
 class UserService:
@@ -17,6 +16,7 @@ class UserService:
             token: UUID,
             session: AsyncSession
     ) -> Optional[User]:
+        """Get user by token."""
         token = self._validate_token(token)
         statement = select(User).where(User.token == token)
         user = await session.execute(statement)
@@ -37,27 +37,21 @@ class UserService:
             UUID(token, version=4)
             return token
         except ValueError:
-            raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED,
-                detail="User is not authorized or entered invalid token"
-            )
+            raise UnauthorizedException
 
     async def create_user(
             self,
             user_data: UserCreateRequest,
             session: AsyncSession
     ) -> User:
-        """Write user into the database."""
+        """Save user into the database."""
         user = User(username=user_data.username)
         user_from_db = await self._get_by_username(
             username=user_data.username,
             session=session
         )
         if user_from_db:
-            raise HTTPException(
-                status_code=HTTPStatus.BAD_REQUEST,
-                detail="User already exists"
-            )
+            raise AlreadyExistsException("User", username=user_data.username)
         session.add(user)
         await session.commit()
         await session.refresh(user)
@@ -68,7 +62,7 @@ class UserService:
         user = await self._get_by_token(token, session)
         if user:
             return user
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="User not found.")
+        raise NotFoundException("User", token=token)
 
 
 user_service = UserService()
