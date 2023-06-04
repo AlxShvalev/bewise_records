@@ -18,7 +18,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @router.post(
-    "/upload",
+    "/record",
     status_code=HTTPStatus.CREATED,
     tags=["Upload"],
     summary="Upload wav file to server."
