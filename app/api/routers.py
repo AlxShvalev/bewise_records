@@ -1,3 +1,4 @@
+import os
 from http import HTTPStatus
 from uuid import UUID
 
@@ -34,6 +35,8 @@ async def upload_record(
 @router.get(
     "/record",
     status_code=HTTPStatus.OK,
+    tags=["Download"],
+    summary="Download mp3 record from server by record id and owner id."
 )
 async def download_record(
         id: int,
@@ -41,9 +44,10 @@ async def download_record(
         session: AsyncSession = Depends(get_async_session)
 ):
     file_path = await media_service.download_record(id, user, session)
+    filename = os.path.split(file_path)[-1]
     return FileResponse(
         file_path,
-        filename="Certificate.pdf",
+        filename=filename,
         media_type="multipart/form-data"
     )
 
