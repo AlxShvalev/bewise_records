@@ -14,7 +14,7 @@ ___
 ```bash
 git clone git@github.com:AlxShvalev/bewise_records.git
 ```
-- Заполнить файл `.env.example` необходимыми данными и переименовать в `.env`
+- В папке проекта заполнить файл `.env.example` необходимыми данными и переименовать в `.env`
 - Выполнить команду 
 ```bash
 docker-compose up -d --build
