@@ -15,5 +15,3 @@ RUN apt-get -y update
 RUN apt-get -y upgrade
 
 RUN apt-get -y install ffmpeg
-
-CMD uvicorn main:app --host 0.0.0.0 --port 8080 --reload
